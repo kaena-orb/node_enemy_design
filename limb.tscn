@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://c5ale3yw3eeky"]
+
+[ext_resource type="Script" path="res://limb.gd" id="1_usyxu"]
+
+[sub_resource type="Gradient" id="Gradient_x2w23"]
+offsets = PackedFloat32Array(0.00649351, 0.0909091)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_51kpc"]
+gradient = SubResource("Gradient_x2w23")
+fill_to = Vector2(0, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pcnvd"]
+size = Vector2(38, 94)
+
+[node name="limb" type="Node2D"]
+scale = Vector2(1, 0.5)
+script = ExtResource("1_usyxu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-19, 0)
+scale = Vector2(0.59375, 1.46875)
+texture = SubResource("GradientTexture2D_51kpc")
+centered = false
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(0, 95)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -48)
+shape = SubResource("RectangleShape2D_pcnvd")
