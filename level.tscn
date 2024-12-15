@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://bjsu2nvxwf648"]
+
+[ext_resource type="Script" path="res://level.gd" id="1_dhe8b"]
+[ext_resource type="PackedScene" uid="uid://dfu1lr2mtb57t" path="res://enemy.tscn" id="1_wqu3y"]
+[ext_resource type="PackedScene" uid="uid://bl3orw5ws6n67" path="res://chaser.tscn" id="2_3iqt2"]
+[ext_resource type="PackedScene" uid="uid://p3c3701hn652" path="res://player.tscn" id="3_6c0dw"]
+
+[node name="level" type="Node2D"]
+script = ExtResource("1_dhe8b")
+
+[node name="enemy" parent="." instance=ExtResource("1_wqu3y")]
+
+[node name="Path2D" parent="." instance=ExtResource("2_3iqt2")]
+
+[node name="Player" parent="." instance=ExtResource("3_6c0dw")]
+position = Vector2(0, 108)
+
+[connection signal="start_combat" from="Player" to="enemy" method="_on_player_start_combat"]

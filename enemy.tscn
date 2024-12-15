@@ -1,9 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://dfu1lr2mtb57t"]
+[gd_scene load_steps=8 format=3 uid="uid://dfu1lr2mtb57t"]
 
 [ext_resource type="Script" path="res://enemy.gd" id="1_g7o40"]
 [ext_resource type="PackedScene" uid="uid://c5ale3yw3eeky" path="res://limb.tscn" id="1_ks2ug"]
 [ext_resource type="Script" path="res://hit.gd" id="3_5by5p"]
-[ext_resource type="Script" path="res://Player.gd" id="4_dfh1f"]
+[ext_resource type="PackedScene" uid="uid://bupcpakxuf67b" path="res://limb_slam.tscn" id="4_kxbur"]
+[ext_resource type="PackedScene" uid="uid://d28xeu2mnbf8f" path="res://body_slam.tscn" id="5_kajxf"]
 
 [sub_resource type="Gradient" id="Gradient_m3fcu"]
 
@@ -11,94 +12,9 @@
 gradient = SubResource("Gradient_m3fcu")
 fill_from = Vector2(1, 0)
 
-[sub_resource type="Curve2D" id="Curve2D_bfv8u"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 113, -151, -42.6535, -1.68369, 42.6535, 1.68369, 187, -88, -66.2252, -0.56123, 66.2252, 0.56123, 315, -86, 0, 0, 0, 0, 398, -162)
-}
-point_count = 4
-
-[sub_resource type="Gradient" id="Gradient_gddno"]
-offsets = PackedFloat32Array(0.971609, 1)
-colors = PackedColorArray(0.692338, 0.495475, 0, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_u0un6"]
-gradient = SubResource("Gradient_gddno")
-fill_from = Vector2(0, 1)
-fill_to = Vector2(0, 1)
-
-[sub_resource type="Animation" id="Animation_vn481"]
-resource_name = "move"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = false
-tracks/0/path = NodePath("Path2D:curve:point_3/position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(398, -162), Vector2(200, -162)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Path2D/PathFollow2D:progress_ratio")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, 1.0]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.6),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"move_point"
-}]
-}
-
-[sub_resource type="Animation" id="Animation_gagmy"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Path2D:curve:point_3/position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(398, -162)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_tlmc2"]
-_data = {
-"RESET": SubResource("Animation_gagmy"),
-"move": SubResource("Animation_vn481")
-}
-
-[sub_resource type="Gradient" id="Gradient_0v5xy"]
-offsets = PackedFloat32Array(0, 0.981073, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.271293, 0.271293, 0.271293, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_lqgba"]
-gradient = SubResource("Gradient_0v5xy")
-
 [node name="enemy" type="Node2D" node_paths=PackedStringArray("movements")]
 script = ExtResource("1_g7o40")
-movements = [NodePath("Hit")]
+movements = [NodePath("BodySlam"), NodePath("LimbSlam"), NodePath("Hit")]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("GradientTexture2D_hpifl")
@@ -111,31 +27,18 @@ position = Vector2(30, -6)
 
 [node name="Hit" type="Node" parent="." node_paths=PackedStringArray("limbs")]
 script = ExtResource("3_5by5p")
+random_parts_selection = true
+one_shot = true
+limbs = [NodePath("../left_arm"), NodePath("../right_arm"), NodePath("../left_arm"), NodePath("../right_arm")]
+
+[node name="LimbSlam" parent="." node_paths=PackedStringArray("limbs") instance=ExtResource("4_kxbur")]
+one_shot = true
 limbs = [NodePath("../left_arm"), NodePath("../right_arm")]
 
-[node name="Path2D" type="Path2D" parent="."]
-curve = SubResource("Curve2D_bfv8u")
+[node name="BodySlam" parent="." node_paths=PackedStringArray("body") instance=ExtResource("5_kajxf")]
+one_shot = true
+body = NodePath("..")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
-position = Vector2(113, -151)
-rotation = 0.705278
-
-[node name="Sprite2D" type="Sprite2D" parent="Path2D/PathFollow2D"]
-texture = SubResource("GradientTexture2D_u0un6")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_tlmc2")
-}
-autoplay = "move"
-
-[node name="Player" type="CharacterBody2D" parent="."]
-position = Vector2(98, -15)
-script = ExtResource("4_dfh1f")
-
-[node name="Sprite2D2" type="Sprite2D" parent="Player"]
-texture = SubResource("GradientTexture2D_lqgba")
-
-[node name="Camera2D" type="Camera2D" parent="Player"]
-
-[connection signal="movement_finished" from="Hit" to="." method="_on_hit_movement_finished"]
+[connection signal="movement_finish" from="Hit" to="." method="_on_movement_finish"]
+[connection signal="movement_finish" from="LimbSlam" to="." method="_on_movement_finish"]
+[connection signal="movement_finish" from="BodySlam" to="." method="_on_movement_finish"]

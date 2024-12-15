@@ -29,3 +29,6 @@ position = Vector2(0, 95)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, -48)
 shape = SubResource("RectangleShape2D_pcnvd")
+
+[node name="Tip" type="Marker2D" parent="."]
+position = Vector2(0, 94)

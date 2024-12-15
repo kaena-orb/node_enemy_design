@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://bupcpakxuf67b"]
+
+[ext_resource type="PackedScene" uid="uid://dkd3jgvkn6jnv" path="res://movement.tscn" id="1_h1grc"]
+[ext_resource type="Script" path="res://limb_slam.gd" id="2_b3wx4"]
+
+[node name="LimbSlam" instance=ExtResource("1_h1grc")]
+script = ExtResource("2_b3wx4")

@@ -1,42 +1,24 @@
 extends Movement
 class_name Hit
 
-@export var limbs : Array[Limb]
-var current_limb = 0
-
 func start_movement():
-	if _has_limbs():
-		_select_limb()
+	if has_limbs():
 		_hit()
-
-func _has_limbs() -> bool:
-	return limbs.size() > 0
-
-func _select_limb() -> Limb:
-	var limb : Limb
-
-	if random_parts_selection:
-		var random_limb_index = randi() % limbs.size()
-		limb = limbs[random_limb_index]
-	else:
-		current_limb += 1
-		if current_limb == limbs.size():
-			current_limb = 0
-			limb = limbs[current_limb]
-		else:
-			limb = limbs[current_limb]
-
-	return limb
 
 func _hit():
 	var tween = create_tween()
-	tween.tween_property(limbs[current_limb], "scale:y", 1, 1)
-	tween.connect("finished", _recoil)
+	tween.tween_property(get_current_limb(), "scale:y", 1, 0.25)
+	tween.connect("finished", emit_signal.bind("hit"))
 
 func _recoil():
 	var tween = create_tween()
-	tween.tween_property(limbs[current_limb], "scale:y", 0.5, 1.5)
-	tween.connect("finished", _reset)
+	tween.tween_property(get_current_limb(), "scale:y", 0.5, 0.42)
+	tween.connect("finished", emit_signal.bind("recoil"))
 
-func _reset():
-	movement_finished.emit()
+func _on_hit():
+	_recoil()
+
+func _on_recoil():
+	var limb = next_limb()
+	if limb:
+		start_movement()
